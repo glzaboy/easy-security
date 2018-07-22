@@ -1,15 +1,23 @@
 package com.github.glzaboy.easysecurity.util;
 
 import com.github.glzaboy.easysecurity.securitymanager.SecurityManager;
+import com.github.glzaboy.easysecurity.securitymanager.UnavailableSecurityManagerException;
 
 public class SecurityUtils {
-    private SecurityManager securityManager;
+    private static SecurityManager securityManager;
 
-    public SecurityManager getSecurityManager() {
+    public static SecurityManager getSecurityManager() throws UnavailableSecurityManagerException {
+        SecurityManager securityManager = ThreadContext.getSecurityManager();
+        if(securityManager==null){
+            securityManager=SecurityUtils.securityManager;
+        }
+        if(securityManager==null){
+            throw new UnavailableSecurityManagerException("No SecurityManager ,Thead context "+Thread.currentThread().getName());
+        }
         return securityManager;
     }
-
     public void setSecurityManager(SecurityManager securityManager) {
+        ThreadContext.bindSecurityManager(securityManager);
         this.securityManager = securityManager;
     }
 }

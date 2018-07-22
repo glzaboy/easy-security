@@ -1,10 +1,11 @@
 package com.github.glzaboy.easysecurity.user;
 
-public interface UserInfo {
+import com.github.glzaboy.easysecurity.session.Session;
+
+public interface User {
     String getUserName();
     void setUserName(String name);
 
-
-    boolean isauthorizationed();
+    Session getSession();
 
 }
