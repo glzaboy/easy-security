@@ -17,7 +17,10 @@ public interface Session{
 
     Date getLastActiveDate();
 
-    boolean stopSession();
+
+    public boolean isValid();
+
+    boolean stopSession() throws InvalidSessionException;
 
 
     Collection<String> getObjectKeys() throws InvalidSessionException;
@@ -30,6 +33,8 @@ public interface Session{
 
     Object removeAttribute(String key) throws InvalidSessionException;
 
+    User  getUser() throws InvalidSessionException;
 
+    public void setUser(User user) throws InvalidSessionException;
 
 }
