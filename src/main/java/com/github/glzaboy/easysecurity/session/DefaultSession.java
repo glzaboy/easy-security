@@ -2,8 +2,6 @@ package com.github.glzaboy.easysecurity.session;
 
 import com.github.glzaboy.easysecurity.user.User;
 import com.github.glzaboy.easysecurity.util.ThreadContext;
-import javafx.scene.chart.PieChart;
-import sun.plugin.dom.exception.InvalidAccessException;
 
 import java.io.Serializable;
 import java.util.*;
@@ -13,14 +11,21 @@ public class DefaultSession implements Session,Serializable {
 
     private Date lastActiveDate;
 
-    private boolean isValid;
+    private boolean isValid=true;
 
     private UUID id;
     private Map<String, Object> attributes;
 
     static final String USER_KEY = ThreadContext.class.getName() + "_USER_KEY";
 
+    public DefaultSession() {
+        setCreateDate(new Date());
+    }
 
+
+    public DefaultSession(Object o) {
+        setAttribute(o);
+    }
 
     public Date getCreateDate() {
         return createDate;
@@ -140,23 +145,17 @@ public class DefaultSession implements Session,Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         DefaultSession that = (DefaultSession) o;
-
-        if (isValid() != that.isValid()) return false;
-        if (!getCreateDate().equals(that.getCreateDate())) return false;
-        if (!getLastActiveDate().equals(that.getLastActiveDate())) return false;
-        if (!getId().equals(that.getId())) return false;
-        return getAttributes().equals(that.getAttributes());
+        return isValid == that.isValid &&
+                Objects.equals(createDate, that.createDate) &&
+                Objects.equals(lastActiveDate, that.lastActiveDate) &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(attributes, that.attributes);
     }
 
     @Override
     public int hashCode() {
-        int result = getCreateDate().hashCode();
-        result = 31 * result + getLastActiveDate().hashCode();
-        result = 31 * result + (isValid() ? 1 : 0);
-        result = 31 * result + getId().hashCode();
-        result = 31 * result + getAttributes().hashCode();
-        return result;
+
+        return Objects.hash(createDate, lastActiveDate, isValid, id, attributes);
     }
 }
