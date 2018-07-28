@@ -1,11 +1,20 @@
 package com.github.glzaboy.easysecurity.user;
 
-import com.github.glzaboy.easysecurity.session.Session;
 
-public interface User {
+import java.io.Serializable;
+import java.util.Collection;
+
+public interface User<TId extends Serializable> {
+    TId getId();
+
     String getUserName();
     void setUserName(String name);
 
-    Session getSession();
+//    String getSessionId();
+
+    Collection<String> getRole();
+
+    Collection<String> getRules();
+
 
 }

@@ -2,11 +2,21 @@ package com.github.glzaboy.easysecurity.session;
 
 import com.github.glzaboy.easysecurity.user.User;
 import com.github.glzaboy.easysecurity.util.ThreadContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class DefaultSession implements Session,Serializable {
+    Logger logger=LoggerFactory.getLogger(DefaultSession.class);
+
+
     private Date createDate;
 
     private Date lastActiveDate;
@@ -18,20 +28,32 @@ public class DefaultSession implements Session,Serializable {
 
     static final String USER_KEY = ThreadContext.class.getName() + "_USER_KEY";
 
-    public DefaultSession() {
+    public DefaultSession(UUID uuid,User user) {
+        setValid(true);
+        setId(uuid);
         setCreateDate(new Date());
+        setLastActiveDate(getCreateDate());
+        try {
+            setUser(user);
+        } catch (InvalidSessionException e) {
+            logger.warn("Session Invalid .");
+        }
     }
 
 
-    public DefaultSession(Object o) {
-        setAttribute(o);
+    public DefaultSession(UUID id) {
+        this(id,null);
+    }
+
+    public DefaultSession(User user) {
+        this(UUID.randomUUID(),user);
     }
 
     public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    private void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
@@ -39,7 +61,7 @@ public class DefaultSession implements Session,Serializable {
         return lastActiveDate;
     }
 
-    public void setLastActiveDate(Date lastActiveDate) {
+    private void setLastActiveDate(Date lastActiveDate) {
         this.lastActiveDate = lastActiveDate;
     }
 
@@ -55,7 +77,7 @@ public class DefaultSession implements Session,Serializable {
         return id;
     }
 
-    public void setId(UUID id) {
+    private void setId(UUID id) {
         this.id = id;
     }
 
@@ -129,9 +151,12 @@ public class DefaultSession implements Session,Serializable {
         if(!isValid()){
             throw new InvalidSessionException("会话已失效");
         }
-        if(isValid()){
+        if(user!=null){
             setAttribute(USER_KEY,user);
+        }else{
+            removeAttribute(USER_KEY);
         }
+
     }
     public User getUser() throws InvalidSessionException{
         if(!isValid()){
@@ -142,21 +167,22 @@ public class DefaultSession implements Session,Serializable {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         DefaultSession that = (DefaultSession) o;
-        return isValid == that.isValid &&
-                Objects.equals(createDate, that.createDate) &&
-                Objects.equals(lastActiveDate, that.lastActiveDate) &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(attributes, that.attributes);
+
+        if (isValid != that.isValid) return false;
+        if (!id.equals(that.id)) return false;
+        return attributes != null ? attributes.equals(that.attributes) : that.attributes == null;
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(createDate, lastActiveDate, isValid, id, attributes);
+        int result = (isValid ? 1 : 0);
+        result = 31 * result + id.hashCode();
+        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        return result;
     }
 }
