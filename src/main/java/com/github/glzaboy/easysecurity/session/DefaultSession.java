@@ -35,7 +35,7 @@ public class DefaultSession implements Session,Serializable {
         setLastActiveDate(getCreateDate());
         try {
             setUser(user);
-        } catch (InvalidSessionException e) {
+        } catch (UnavailableSessionException e) {
             logger.warn("Session Invalid .");
         }
     }
@@ -94,17 +94,17 @@ public class DefaultSession implements Session,Serializable {
     }
 
 
-    public boolean stopSession() throws InvalidSessionException {
+    public boolean stopSession() throws UnavailableSessionException {
         if(!isValid()){
-            throw new InvalidSessionException("会话无效");
+            throw new UnavailableSessionException("会话无效");
         }
         setValid(false);
         return true;
     }
 
-    public Collection<String> getObjectKeys() throws InvalidSessionException {
+    public Collection<String> getObjectKeys() throws UnavailableSessionException {
         if(!isValid()){
-            throw new InvalidSessionException("会话已失效");
+            throw new UnavailableSessionException("会话已失效");
         }
         Map<String, Object> attributes = getAttributes();
         if(attributes==null){
@@ -113,9 +113,9 @@ public class DefaultSession implements Session,Serializable {
         return attributes.keySet();
     }
 
-    public Object getAttribute(String key) throws InvalidSessionException {
+    public Object getAttribute(String key) throws UnavailableSessionException {
         if(!isValid()){
-            throw new InvalidSessionException("会话已失效");
+            throw new UnavailableSessionException("会话已失效");
         }
         Map<String, Object> attributes = getAttributes();
         if(attributes==null){
@@ -124,9 +124,9 @@ public class DefaultSession implements Session,Serializable {
         return attributes.get(key);
     }
 
-    public void setAttribute(String key, Object value) throws InvalidSessionException {
+    public void setAttribute(String key, Object value) throws UnavailableSessionException {
         if(!isValid()){
-            throw new InvalidSessionException("会话已失效");
+            throw new UnavailableSessionException("会话已失效");
         }
         Map<String, Object> attributes = getAttributes();
         if (attributes == null) {
@@ -136,9 +136,9 @@ public class DefaultSession implements Session,Serializable {
         attributes.put(key,value);
     }
 
-    public Object removeAttribute(String key) throws InvalidSessionException {
+    public Object removeAttribute(String key) throws UnavailableSessionException {
         if(!isValid()){
-            throw new InvalidSessionException("会话已失效");
+            throw new UnavailableSessionException("会话已失效");
         }
         Map<String, Object> attributes = getAttributes();
         if (attributes == null) {
@@ -147,9 +147,9 @@ public class DefaultSession implements Session,Serializable {
         return attributes.remove(key);
     }
 
-    public void setUser(User user) throws InvalidSessionException {
+    public void setUser(User user) throws UnavailableSessionException {
         if(!isValid()){
-            throw new InvalidSessionException("会话已失效");
+            throw new UnavailableSessionException("会话已失效");
         }
         if(user!=null){
             setAttribute(USER_KEY,user);
@@ -158,9 +158,9 @@ public class DefaultSession implements Session,Serializable {
         }
 
     }
-    public User getUser() throws InvalidSessionException{
+    public User getUser() throws UnavailableSessionException {
         if(!isValid()){
-            throw new InvalidSessionException("会话已失效");
+            throw new UnavailableSessionException("会话已失效");
         }
         User attribute = (User)getAttribute(USER_KEY);
         return attribute;

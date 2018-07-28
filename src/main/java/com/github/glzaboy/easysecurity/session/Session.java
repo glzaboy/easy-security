@@ -2,7 +2,6 @@ package com.github.glzaboy.easysecurity.session;
 
 import com.github.glzaboy.easysecurity.user.User;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
@@ -20,21 +19,21 @@ public interface Session{
 
     public boolean isValid();
 
-    boolean stopSession() throws InvalidSessionException;
+    boolean stopSession() throws UnavailableSessionException;
 
 
-    Collection<String> getObjectKeys() throws InvalidSessionException;
+    Collection<String> getObjectKeys() throws UnavailableSessionException;
 
-    Object getAttribute(String key) throws InvalidSessionException;
-
-
-    void setAttribute(String key, Object value) throws InvalidSessionException;
+    Object getAttribute(String key) throws UnavailableSessionException;
 
 
-    Object removeAttribute(String key) throws InvalidSessionException;
+    void setAttribute(String key, Object value) throws UnavailableSessionException;
 
-    User  getUser() throws InvalidSessionException;
 
-    public void setUser(User user) throws InvalidSessionException;
+    Object removeAttribute(String key) throws UnavailableSessionException;
+
+    User  getUser() throws UnavailableSessionException;
+
+    public void setUser(User user) throws UnavailableSessionException;
 
 }

@@ -1,6 +1,8 @@
 package com.github.glzaboy.easysecurity.securitymanager;
 
-public class UnavailableSecurityManagerException extends RuntimeException {
+import com.github.glzaboy.easysecurity.exceptions.SecurityRuntimeException;
+
+public class UnavailableSecurityManagerException extends SecurityRuntimeException {
     public UnavailableSecurityManagerException() {
     }
 

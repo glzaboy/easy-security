@@ -11,11 +11,11 @@ public class TestThreadContext {
     void TestThreadContext(){
         assertNull(ThreadContext.getSecurityManager()) ;
         SecurityManager securityManager=new DefaultSecurityManager();
-        ThreadContext.bindSecurityManager(securityManager);
+        ThreadContext.setSecurityManager(securityManager);
         assertEquals(ThreadContext.getSecurityManager(),securityManager);
-        assertEquals(ThreadContext.unbinSecurityManager(),securityManager);
+        assertEquals(ThreadContext.removeSecurityManager(),securityManager);
         assertNull(ThreadContext.getSecurityManager());
-        ThreadContext.bindSecurityManager(securityManager);
+        ThreadContext.setSecurityManager(securityManager);
         ThreadContext.removeAll();
         assertNull(ThreadContext.getSecurityManager());
     }

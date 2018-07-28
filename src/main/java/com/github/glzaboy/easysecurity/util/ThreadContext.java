@@ -1,6 +1,7 @@
 package com.github.glzaboy.easysecurity.util;
 
 import com.github.glzaboy.easysecurity.securitymanager.SecurityManager;
+import com.github.glzaboy.easysecurity.session.SessionStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,7 @@ public class ThreadContext {
     static Logger logger = LoggerFactory.getLogger(ThreadLocal.class);
     static ThreadLocal<Map<String, Object>> threadLocal = new InheritableThreadLocalMap<Map<String, Object>>();
     static final String SECURITY_MANAGER_KEY = ThreadContext.class.getName() + "_SECURITY_MANAGER_KEY";
-    static final String SUBJECT_KEY = ThreadContext.class.getName() + "_SUBJECT_KEY";
+    static final String SESSION_STORE_KEY = ThreadContext.class.getName() + "_SESSION_STORE_KEY";
 
     static {
         getContext();
@@ -30,7 +31,7 @@ public class ThreadContext {
     }
 
 
-    public static Object get(String key) {
+    protected static Object get(String key) {
         Object o = getContext().get(key);
         if (logger.isTraceEnabled()) {
             logger.debug("Thread {} get key {} of type {} value {}"
@@ -39,7 +40,7 @@ public class ThreadContext {
         return o;
     }
 
-    public static void put(String key, Object value) {
+    protected static void put(String key, Object value) {
         if (key == null) {
             throw new IllegalArgumentException("key 不能为空。");
         }
@@ -79,16 +80,32 @@ public class ThreadContext {
         return (SecurityManager) get(SECURITY_MANAGER_KEY);
     }
 
-    public static void bindSecurityManager(SecurityManager securityManager) {
+    public static void setSecurityManager(SecurityManager securityManager) {
         if (securityManager != null) {
             put(SECURITY_MANAGER_KEY, securityManager);
         }
     }
 
-    public static SecurityManager unbinSecurityManager() {
+    public static SecurityManager removeSecurityManager() {
         SecurityManager remove = (SecurityManager) remove(SECURITY_MANAGER_KEY);
         return remove;
     }
+
+    public static SessionStore getSessionStore() {
+        return (SessionStore) get(SESSION_STORE_KEY);
+    }
+
+    public static void setSessionStore(SessionStore sessionStore) {
+        if (sessionStore != null) {
+            put(SESSION_STORE_KEY, sessionStore);
+        }
+    }
+
+    public static SessionStore removeSessionStore() {
+        SessionStore remove = (SessionStore) remove(SESSION_STORE_KEY);
+        return remove;
+    }
+
 
     public static class InheritableThreadLocalMap<T extends Map<String, Object>> extends InheritableThreadLocal<Map<String, Object>> {
 

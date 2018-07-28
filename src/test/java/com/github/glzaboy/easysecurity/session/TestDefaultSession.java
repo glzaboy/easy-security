@@ -41,7 +41,7 @@ public class TestDefaultSession {
 
     @Test
     @DisplayName("测试会话有效等信息")
-    void  testDefaultSession() throws InvalidSessionException, InterruptedException {
+    void  testDefaultSession() throws UnavailableSessionException, InterruptedException {
         assertEquals(defaultSession.isValid(),true);
 
 
@@ -56,7 +56,7 @@ public class TestDefaultSession {
     }
     @Test
     @DisplayName("测试用户相等性")
-    void testDefaultSessionUser() throws InvalidSessionException {
+    void testDefaultSessionUser() throws UnavailableSessionException {
         UUID userId=UUID.randomUUID();
         DefaultUser user=new DefaultUser(userId);
         defaultSession.setUser(user);
