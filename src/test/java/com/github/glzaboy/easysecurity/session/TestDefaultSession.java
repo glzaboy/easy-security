@@ -1,6 +1,6 @@
 package com.github.glzaboy.easysecurity.session;
 
-import com.github.glzaboy.easysecurity.user.DefaultUser;
+import com.github.glzaboy.easysecurity.user.UserImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,22 +14,22 @@ public class TestDefaultSession {
     /**
      * 会话1
      */
-    private DefaultSession defaultSession;
+    private UuidSession defaultSession;
     /**
      * 会话二
      */
-    private DefaultSession defaultSession2;
+    private UuidSession defaultSession2;
     /**
      * 会话二
      */
-    private DefaultSession defaultSession3;
+    private UuidSession defaultSession3;
     @BeforeEach
     void testBefore(){
         UUID sessionId1and2=UUID.randomUUID();
         UUID sessionId3=UUID.randomUUID();
-        defaultSession=new DefaultSession(sessionId1and2);
-        defaultSession2=new DefaultSession(sessionId1and2);
-        defaultSession3=new DefaultSession(sessionId3);
+        defaultSession=new UuidSession(sessionId1and2);
+        defaultSession2=new UuidSession(sessionId1and2);
+        defaultSession3=new UuidSession(sessionId3);
     }
     @Test
     @DisplayName("测试会话相等")
@@ -58,9 +58,9 @@ public class TestDefaultSession {
     @DisplayName("测试用户相等性")
     void testDefaultSessionUser() throws UnavailableSessionException {
         UUID userId=UUID.randomUUID();
-        DefaultUser user=new DefaultUser(userId);
+        UserImpl user=new UserImpl(userId);
         defaultSession.setUser(user);
-        DefaultUser user2=new DefaultUser(userId);
+        UserImpl user2=new UserImpl(userId);
         defaultSession2.setUser(user2);
 
 
@@ -69,11 +69,11 @@ public class TestDefaultSession {
 
 
         assertEquals(defaultSession.getUser(),defaultSession2.getUser());
-        DefaultUser user3=new DefaultUser(UUID.randomUUID());
+        UserImpl user3=new UserImpl(UUID.randomUUID());
 
         defaultSession3.setUser(user3);
         assertNotEquals(user,user3);
-        DefaultSession locSession=new DefaultSession(user3);
+        UuidSession locSession=new UuidSession(user3);
         assertNotEquals(defaultSession3,locSession);
         assertEquals(defaultSession3.getUser(),locSession.getUser());
         defaultSession3.setUser(null);

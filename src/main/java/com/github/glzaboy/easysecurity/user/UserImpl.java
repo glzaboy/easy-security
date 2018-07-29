@@ -1,21 +1,21 @@
 package com.github.glzaboy.easysecurity.user;
 
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
 
-public class DefaultUser implements User<UUID>{
-    private UUID id;
+public class UserImpl<ID extends Serializable> implements User<ID>{
+    private ID id;
     private String userName;
 
 
-    public DefaultUser(UUID id) {
+    public UserImpl(ID id) {
         this.id = id;
     }
 
 
-    public UUID getId() {
+    public ID getId() {
         return id;
     }
 
@@ -40,7 +40,7 @@ public class DefaultUser implements User<UUID>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DefaultUser that = (DefaultUser) o;
+        UserImpl that = (UserImpl) o;
 
         return id.equals(that.id);
     }

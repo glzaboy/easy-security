@@ -4,9 +4,9 @@ import com.github.glzaboy.easysecurity.authc.AuthCException;
 import com.github.glzaboy.easysecurity.realm.Realm;
 import com.github.glzaboy.easysecurity.realm.RealmException;
 import com.github.glzaboy.easysecurity.realm.loginInfo.LoginInfoDao;
-import com.github.glzaboy.easysecurity.session.DefaultSession;
 import com.github.glzaboy.easysecurity.session.Session;
 import com.github.glzaboy.easysecurity.session.SessionStore;
+import com.github.glzaboy.easysecurity.session.generator.SessionGenerator;
 import com.github.glzaboy.easysecurity.user.User;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ public class DefaultSecurityManager implements SecurityManager {
     private SessionStore sessionStore;
 
     private Collection<Realm> realms;
-
+    private SessionGenerator sessionGenerator;
 
     public SessionStore getSessionStore() {
         return sessionStore;
@@ -25,6 +25,21 @@ public class DefaultSecurityManager implements SecurityManager {
         this.sessionStore = sessionStore;
     }
 
+    public Collection<Realm> getRealms() {
+        return realms;
+    }
+
+    public void setRealms(Collection<Realm> realms) {
+        this.realms = realms;
+    }
+
+    public SessionGenerator getSessionGenerator() {
+        return sessionGenerator;
+    }
+
+    public void setSessionGenerator(SessionGenerator sessionGenerator) {
+        this.sessionGenerator = sessionGenerator;
+    }
 
     public Session login(LoginInfoDao loginInfoDao) throws AuthCException {
         Session session=null;
@@ -39,7 +54,7 @@ public class DefaultSecurityManager implements SecurityManager {
                 user = realm.getUser(loginInfoDao);
             }
             if(realmSuccess && user!=null){
-                session = new DefaultSession(user);
+                session = getSessionGenerator().buildSession(user);
                 session.touch();
                 sessionStore.addSession(session);
             }

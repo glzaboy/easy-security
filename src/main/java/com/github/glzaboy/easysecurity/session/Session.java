@@ -2,13 +2,14 @@ package com.github.glzaboy.easysecurity.session;
 
 import com.github.glzaboy.easysecurity.user.User;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
-public interface Session{
+public interface Session<ID extends Serializable>{
 
-    UUID getId();
+    ID getId();
 
     void touch();
 

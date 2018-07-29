@@ -8,6 +8,6 @@ import java.util.UUID;
 public interface SessionStore {
     boolean addSession(Session session);
     boolean delSession(Session session);
-    Session getSession(UUID sessionId);
+    Session getSession(Serializable sessionId);
     boolean sessionUpdate(Session session);
 }

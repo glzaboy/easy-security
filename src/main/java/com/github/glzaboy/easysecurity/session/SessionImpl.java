@@ -11,10 +11,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-public class DefaultSession implements Session,Serializable {
-    Logger logger=LoggerFactory.getLogger(DefaultSession.class);
+public class SessionImpl<ID extends Serializable>  implements Session<ID>{
+    Logger logger=LoggerFactory.getLogger(SessionImpl.class);
 
 
     private Date createDate;
@@ -23,14 +22,14 @@ public class DefaultSession implements Session,Serializable {
 
     private boolean isValid=true;
 
-    private UUID id;
+    private ID id;
     private Map<String, Object> attributes;
 
     static final String USER_KEY = ThreadContext.class.getName() + "_USER_KEY";
 
-    public DefaultSession(UUID uuid,User user) {
+    public SessionImpl(ID id,User user) {
         setValid(true);
-        setId(uuid);
+        setId(id);
         setCreateDate(new Date());
         setLastActiveDate(getCreateDate());
         try {
@@ -41,12 +40,8 @@ public class DefaultSession implements Session,Serializable {
     }
 
 
-    public DefaultSession(UUID id) {
+    public SessionImpl(ID id) {
         this(id,null);
-    }
-
-    public DefaultSession(User user) {
-        this(UUID.randomUUID(),user);
     }
 
     public Date getCreateDate() {
@@ -73,11 +68,11 @@ public class DefaultSession implements Session,Serializable {
         isValid = valid;
     }
 
-    public UUID getId() {
+    public ID getId() {
         return id;
     }
 
-    private void setId(UUID id) {
+    private void setId(ID id) {
         this.id = id;
     }
 
@@ -171,11 +166,11 @@ public class DefaultSession implements Session,Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DefaultSession that = (DefaultSession) o;
+        SessionImpl<?> session = (SessionImpl<?>) o;
 
-        if (isValid != that.isValid) return false;
-        if (!id.equals(that.id)) return false;
-        return attributes != null ? attributes.equals(that.attributes) : that.attributes == null;
+        if (isValid != session.isValid) return false;
+        if (!id.equals(session.id)) return false;
+        return attributes != null ? attributes.equals(session.attributes) : session.attributes == null;
     }
 
     @Override
