@@ -5,16 +5,20 @@ import com.github.glzaboy.easysecurity.realm.Realm;
 import com.github.glzaboy.easysecurity.realm.RealmException;
 import com.github.glzaboy.easysecurity.realm.loginInfo.LoginInfoDao;
 import com.github.glzaboy.easysecurity.session.Session;
+import com.github.glzaboy.easysecurity.session.SessionImpl;
 import com.github.glzaboy.easysecurity.session.SessionStore;
+import com.github.glzaboy.easysecurity.session.generator.JavaUuidIdSessionGenerator;
 import com.github.glzaboy.easysecurity.session.generator.SessionGenerator;
 import com.github.glzaboy.easysecurity.user.User;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 public class DefaultSecurityManager implements SecurityManager {
     private SessionStore sessionStore;
 
     private Collection<Realm> realms;
+
     private SessionGenerator sessionGenerator;
 
     public SessionStore getSessionStore() {
@@ -33,16 +37,13 @@ public class DefaultSecurityManager implements SecurityManager {
         this.realms = realms;
     }
 
-    public SessionGenerator getSessionGenerator() {
-        return sessionGenerator;
-    }
 
     public void setSessionGenerator(SessionGenerator sessionGenerator) {
         this.sessionGenerator = sessionGenerator;
     }
 
     public Session login(LoginInfoDao loginInfoDao) throws AuthCException {
-        Session session=null;
+        Session<Serializable> serializableSession=new SessionImpl<>(sessionGenerator.generateId());
         boolean realmSuccess=false;
         User user=null;
         try {
@@ -54,14 +55,14 @@ public class DefaultSecurityManager implements SecurityManager {
                 user = realm.getUser(loginInfoDao);
             }
             if(realmSuccess && user!=null){
-                session = getSessionGenerator().buildSession(user);
-                session.touch();
-                sessionStore.addSession(session);
+                serializableSession.setUser(user);
+                serializableSession.touch();
+                sessionStore.addSession(serializableSession);
             }
         } catch (RealmException e) {
             throw new AuthCException(e.getMessage(),e.getCause());
         }finally {
-            return session;
+            return serializableSession;
         }
     }
 
