@@ -5,11 +5,10 @@ import com.github.glzaboy.easysecurity.user.User;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import java.util.UUID;
 
-public interface Session<ID extends Serializable>{
+public interface Session<T extends Serializable>{
 
-    ID getId();
+    T getId();
 
     void touch();
 
@@ -36,5 +35,7 @@ public interface Session<ID extends Serializable>{
     User  getUser() throws UnavailableSessionException;
 
     public void setUser(User user) throws UnavailableSessionException;
+
+    public String toString();
 
 }

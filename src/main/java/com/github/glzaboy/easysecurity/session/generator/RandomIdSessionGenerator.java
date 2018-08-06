@@ -1,9 +1,5 @@
 package com.github.glzaboy.easysecurity.session.generator;
 
-import com.github.glzaboy.easysecurity.session.Session;
-import com.github.glzaboy.easysecurity.session.SessionImpl;
-import com.github.glzaboy.easysecurity.user.User;
-
 import java.util.Random;
 
 public class RandomIdSessionGenerator implements SessionGenerator<String> {
@@ -22,10 +18,5 @@ public class RandomIdSessionGenerator implements SessionGenerator<String> {
 
     public String generateId() {
         return Long.toString(random.nextLong());
-    }
-
-    public Session<String> buildSession(User user) {
-        Session<String> stringSession=new SessionImpl<String>(generateId(),user);
-        return stringSession;
     }
 }

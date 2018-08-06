@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SessionImpl<ID extends Serializable>  implements Session<ID>{
+public class SessionImpl<T  extends Serializable>  implements Session<T>{
     Logger logger=LoggerFactory.getLogger(SessionImpl.class);
 
 
@@ -22,12 +22,12 @@ public class SessionImpl<ID extends Serializable>  implements Session<ID>{
 
     private boolean isValid=true;
 
-    private ID id;
+    private T id;
     private Map<String, Object> attributes;
 
     static final String USER_KEY = ThreadContext.class.getName() + "_USER_KEY";
 
-    public SessionImpl(ID id,User user) {
+    public SessionImpl(T id, User user) {
         setValid(true);
         setId(id);
         setCreateDate(new Date());
@@ -40,7 +40,7 @@ public class SessionImpl<ID extends Serializable>  implements Session<ID>{
     }
 
 
-    public SessionImpl(ID id) {
+    public SessionImpl(T id) {
         this(id,null);
     }
 
@@ -68,11 +68,11 @@ public class SessionImpl<ID extends Serializable>  implements Session<ID>{
         isValid = valid;
     }
 
-    public ID getId() {
+    public T getId() {
         return id;
     }
 
-    private void setId(ID id) {
+    private void setId(T id) {
         this.id = id;
     }
 
@@ -179,5 +179,16 @@ public class SessionImpl<ID extends Serializable>  implements Session<ID>{
         result = 31 * result + id.hashCode();
         result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "SessionImpl{" +
+                "createDate=" + createDate +
+                ", lastActiveDate=" + lastActiveDate +
+                ", isValid=" + isValid +
+                ", id=" + id +
+                ", attributes=" + attributes +
+                '}';
     }
 }
