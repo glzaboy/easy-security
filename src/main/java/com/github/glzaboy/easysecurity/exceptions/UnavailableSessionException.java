@@ -1,6 +1,4 @@
-package com.github.glzaboy.easysecurity.session;
-
-import com.github.glzaboy.easysecurity.exceptions.SecurityRuntimeException;
+package com.github.glzaboy.easysecurity.exceptions;
 
 public class UnavailableSessionException extends SecurityRuntimeException {
     public UnavailableSessionException() {

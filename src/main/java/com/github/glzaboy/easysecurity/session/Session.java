@@ -1,5 +1,6 @@
 package com.github.glzaboy.easysecurity.session;
 
+import com.github.glzaboy.easysecurity.exceptions.UnavailableSessionException;
 import com.github.glzaboy.easysecurity.user.User;
 
 import java.io.Serializable;

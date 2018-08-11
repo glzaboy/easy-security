@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ThreadSessionStore implements SessionStore {
-    Map<Serializable,Session> sessionMap=new HashMap<Serializable, Session>();
+    private Map<Serializable, Session> sessionMap = new HashMap<>();
     public boolean addSession(Session session) {
         sessionMap.put(session.getId().toString(),session);
         return false;
@@ -20,7 +20,7 @@ public class ThreadSessionStore implements SessionStore {
         return sessionMap.get(sessionId);
     }
 
-    public boolean sessionUpdate(Session session) {
+    public boolean updateSession(Session session) {
         sessionMap.put(session.getId(),session);
         return true;
     }

@@ -1,6 +1,5 @@
-package com.github.glzaboy.easysecurity.realm;
+package com.github.glzaboy.easysecurity.exceptions;
 
-import com.github.glzaboy.easysecurity.exceptions.SecurityException;
 
 public class RealmException extends SecurityException {
     public RealmException() {

@@ -5,17 +5,17 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 
-public class UserImpl<ID extends Serializable> implements User<ID>{
-    private ID id;
+public class UserImpl<T extends Serializable> implements User<T> {
+    private T id;
     private String userName;
 
 
-    public UserImpl(ID id) {
+    public UserImpl(T id) {
         this.id = id;
     }
 
 
-    public ID getId() {
+    public T getId() {
         return id;
     }
 

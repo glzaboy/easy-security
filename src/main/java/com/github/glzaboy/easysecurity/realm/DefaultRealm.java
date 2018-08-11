@@ -1,21 +1,33 @@
 package com.github.glzaboy.easysecurity.realm;
 
-import com.github.glzaboy.easysecurity.authc.AuthCException;
+import com.github.glzaboy.easysecurity.authorization.Authorization;
+import com.github.glzaboy.easysecurity.exceptions.AuthorizationException;
+import com.github.glzaboy.easysecurity.exceptions.UnavailableSessionException;
 import com.github.glzaboy.easysecurity.realm.loginInfo.LoginInfoDao;
-import com.github.glzaboy.easysecurity.session.Session;
-import com.github.glzaboy.easysecurity.session.UnavailableSessionException;
 import com.github.glzaboy.easysecurity.user.User;
 
+import java.io.Serializable;
+
 public class DefaultRealm implements Realm{
-    public boolean doRealm(LoginInfoDao loginInfoDao) throws AuthCException {
-        return false;
+    private Authorization authc;
+
+    public Authorization getAuthc() {
+        return authc;
     }
 
-    public User getUser(LoginInfoDao loginInfoDao) throws AuthCException {
-        return null;
+    public void setAuthc(Authorization authc) {
+        this.authc = authc;
     }
 
-    public User getUser(Session session) throws UnavailableSessionException {
+    public Serializable doRealm(LoginInfoDao loginInfoDao) throws AuthorizationException {
+        if (authc.checkAuthInfo(loginInfoDao)) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public User getUser(Serializable userId) throws UnavailableSessionException {
         return null;
     }
 }
