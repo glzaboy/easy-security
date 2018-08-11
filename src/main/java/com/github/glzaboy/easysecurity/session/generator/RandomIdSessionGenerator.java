@@ -2,7 +2,7 @@ package com.github.glzaboy.easysecurity.session.generator;
 
 import java.util.Random;
 
-public class RandomIdSessionGenerator implements SessionGenerator<String> {
+public class RandomIdSessionGenerator implements SessionIdGenerator<String> {
     private static final String RANDOM_NUM_GENERATOR_ALGORITHM_NAME = "SHA1PRNG";
     private Random random;
 

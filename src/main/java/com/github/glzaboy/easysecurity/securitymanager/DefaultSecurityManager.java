@@ -1,21 +1,24 @@
 package com.github.glzaboy.easysecurity.securitymanager;
 
-import com.github.glzaboy.easysecurity.authc.AuthCException;
+import com.github.glzaboy.easysecurity.exceptions.AuthorizationException;
+import com.github.glzaboy.easysecurity.exceptions.RealmException;
 import com.github.glzaboy.easysecurity.realm.Realm;
-import com.github.glzaboy.easysecurity.realm.RealmException;
 import com.github.glzaboy.easysecurity.realm.loginInfo.LoginInfoDao;
 import com.github.glzaboy.easysecurity.session.Session;
+import com.github.glzaboy.easysecurity.session.SessionImpl;
 import com.github.glzaboy.easysecurity.session.SessionStore;
-import com.github.glzaboy.easysecurity.session.generator.SessionGenerator;
+import com.github.glzaboy.easysecurity.session.generator.SessionIdGenerator;
 import com.github.glzaboy.easysecurity.user.User;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 public class DefaultSecurityManager implements SecurityManager {
     private SessionStore sessionStore;
 
     private Collection<Realm> realms;
-    private SessionGenerator sessionGenerator;
+    private SessionIdGenerator sessionGenerator;
+
 
     public SessionStore getSessionStore() {
         return sessionStore;
@@ -33,33 +36,34 @@ public class DefaultSecurityManager implements SecurityManager {
         this.realms = realms;
     }
 
-    public SessionGenerator getSessionGenerator() {
+    public SessionIdGenerator getSessionGenerator() {
         return sessionGenerator;
     }
 
-    public void setSessionGenerator(SessionGenerator sessionGenerator) {
+    public void setSessionGenerator(SessionIdGenerator sessionGenerator) {
         this.sessionGenerator = sessionGenerator;
     }
 
-    public Session login(LoginInfoDao loginInfoDao) throws AuthCException {
+    public Session login(LoginInfoDao loginInfoDao) throws AuthorizationException {
         Session session=null;
-        boolean realmSuccess=false;
+        Serializable realmSuccess;
         User user=null;
         try {
             if(realms.size()==0){
-                throw new AuthCException("Realm can not be empty.");
+                throw new AuthorizationException("Realm can not be empty.");
             }
             for (Realm realm : realms){
                 realmSuccess=realm.doRealm(loginInfoDao);
-                user = realm.getUser(loginInfoDao);
+                user = realm.getUser(realmSuccess);
             }
-            if(realmSuccess && user!=null){
-                session = getSessionGenerator().buildSession(user);
+            if (user != null) {
+                session = new SessionImpl(sessionGenerator.generateId());
+                session.setUser(user);
                 session.touch();
                 sessionStore.addSession(session);
             }
         } catch (RealmException e) {
-            throw new AuthCException(e.getMessage(),e.getCause());
+            throw new AuthorizationException(e.getMessage(), e.getCause());
         }finally {
             return session;
         }

@@ -1,5 +1,6 @@
 package com.github.glzaboy.easysecurity.session;
 
+import com.github.glzaboy.easysecurity.exceptions.UnavailableSessionException;
 import com.github.glzaboy.easysecurity.user.User;
 import com.github.glzaboy.easysecurity.util.ThreadContext;
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SessionImpl<ID extends Serializable>  implements Session<ID>{
+public class SessionImpl<T extends Serializable> implements Session<T> {
     Logger logger=LoggerFactory.getLogger(SessionImpl.class);
 
 
@@ -22,12 +23,12 @@ public class SessionImpl<ID extends Serializable>  implements Session<ID>{
 
     private boolean isValid=true;
 
-    private ID id;
+    private T id;
     private Map<String, Object> attributes;
 
     static final String USER_KEY = ThreadContext.class.getName() + "_USER_KEY";
 
-    public SessionImpl(ID id,User user) {
+    public SessionImpl(T id, User user) {
         setValid(true);
         setId(id);
         setCreateDate(new Date());
@@ -40,7 +41,7 @@ public class SessionImpl<ID extends Serializable>  implements Session<ID>{
     }
 
 
-    public SessionImpl(ID id) {
+    public SessionImpl(T id) {
         this(id,null);
     }
 
@@ -64,23 +65,23 @@ public class SessionImpl<ID extends Serializable>  implements Session<ID>{
         return isValid;
     }
 
-    public void setValid(boolean valid) {
+    private void setValid(boolean valid) {
         isValid = valid;
     }
 
-    public ID getId() {
+    public T getId() {
         return id;
     }
 
-    private void setId(ID id) {
+    private void setId(T id) {
         this.id = id;
     }
 
-    public Map<String, Object> getAttributes() {
+    private Map<String, Object> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Map<String, Object> attributes) {
+    private void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 
@@ -125,7 +126,7 @@ public class SessionImpl<ID extends Serializable>  implements Session<ID>{
         }
         Map<String, Object> attributes = getAttributes();
         if (attributes == null) {
-            attributes = new HashMap<String, Object>();
+            attributes = new HashMap<>();
             setAttributes(attributes);
         }
         attributes.put(key,value);
@@ -157,8 +158,7 @@ public class SessionImpl<ID extends Serializable>  implements Session<ID>{
         if(!isValid()){
             throw new UnavailableSessionException("会话已失效");
         }
-        User attribute = (User)getAttribute(USER_KEY);
-        return attribute;
+        return (User) getAttribute(USER_KEY);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.github.glzaboy.easysecurity.session.generator;
 
-public class RandStringSessionGenerator implements SessionGenerator<String> {
+public class RandStringSessionIdGenerator implements SessionIdGenerator<String> {
     @Override
     public String generateId() {
         StringBuilder stringTab=new StringBuilder() ;

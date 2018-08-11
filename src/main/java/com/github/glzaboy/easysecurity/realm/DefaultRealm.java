@@ -9,18 +9,18 @@ import com.github.glzaboy.easysecurity.user.User;
 import java.io.Serializable;
 
 public class DefaultRealm implements Realm{
-    private Authorization authc;
+    private Authorization authorization;
 
-    public Authorization getAuthc() {
-        return authc;
+    public Authorization getAuthorization() {
+        return authorization;
     }
 
-    public void setAuthc(Authorization authc) {
-        this.authc = authc;
+    public void setAuthorization(Authorization authorization) {
+        this.authorization = authorization;
     }
 
     public Serializable doRealm(LoginInfoDao loginInfoDao) throws AuthorizationException {
-        if (authc.checkAuthInfo(loginInfoDao)) {
+        if (authorization.checkAuthInfo(loginInfoDao)) {
             return 1;
         } else {
             return 0;
