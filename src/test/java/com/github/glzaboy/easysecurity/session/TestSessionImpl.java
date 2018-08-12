@@ -41,7 +41,7 @@
 //
 //    @Test
 //    @DisplayName("测试会话有效等信息")
-//    void  testDefaultSession() throws UnavailableSessionException, InterruptedException {
+//    void  testDefaultSession() throws SessionException, InterruptedException {
 //        assertEquals(defaultSession.isValid(),true);
 //
 //
@@ -56,7 +56,7 @@
 //    }
 //    @Test
 //    @DisplayName("测试用户相等性")
-//    void testDefaultSessionUser() throws UnavailableSessionException {
+//    void testDefaultSessionUser() throws SessionException {
 //        UUID userId=UUID.randomUUID();
 //        UserImpl user=new UserImpl(userId);
 //        defaultSession.setUser(user);

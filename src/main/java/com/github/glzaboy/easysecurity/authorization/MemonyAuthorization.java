@@ -4,20 +4,19 @@ import com.github.glzaboy.easysecurity.exceptions.UnknownUserException;
 import com.github.glzaboy.easysecurity.realm.loginInfo.LoginInfoDao;
 import com.github.glzaboy.easysecurity.user.UserAuthority;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MemonyAuthorization<T extends Serializable> implements Authorization<T> {
-    private ArrayList<UserAuthority<T>> userMap = new ArrayList<>();
+public class MemonyAuthorization implements Authorization {
+    private ArrayList<UserAuthority> userMap = new ArrayList<>();
 
-    public void addUser(UserAuthority<T> user) {
+    public void addUser(UserAuthority user) {
         userMap.add(user);
     }
 
     @Override
-    public T checkAuthInfo(LoginInfoDao loginInfoDao) {
-        T userId = null;
-        for (UserAuthority<T> t : userMap) {
+    public String checkAuthInfo(LoginInfoDao loginInfoDao) {
+        String userId = null;
+        for (UserAuthority t : userMap) {
             if (loginInfoDao.getUserName().equalsIgnoreCase(t.getUserName())) {
                 if (loginInfoDao.getPassword().equals(t.getPassword())) {
                     userId = t.getId();
@@ -28,11 +27,11 @@ public class MemonyAuthorization<T extends Serializable> implements Authorizatio
     }
 
     @Override
-    public UserAuthority<T> getUserById(T userId) throws UnknownUserException {
+    public UserAuthority getUserById(String userId) throws UnknownUserException {
         if (userId == null) {
             throw new UnknownUserException("用户不存在");
         }
-        for (UserAuthority<T> t : userMap) {
+        for (UserAuthority t : userMap) {
             if (t.getId().equals(userId)) {
                 return t;
             }

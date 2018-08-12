@@ -1,6 +1,6 @@
 package com.github.glzaboy.easysecurity.exceptions;
 
-public class UnavailableSessionStoreException extends SecurityException {
+public class UnavailableSessionStoreException extends SecurityRuntimeException {
     public UnavailableSessionStoreException() {
     }
 

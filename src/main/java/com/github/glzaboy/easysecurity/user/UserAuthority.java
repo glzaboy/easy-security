@@ -1,14 +1,13 @@
 package com.github.glzaboy.easysecurity.user;
 
-import java.io.Serializable;
 import java.util.Collection;
 
-public class UserAuthority<T extends Serializable> extends UserImpl<T> implements Authority {
+public class UserAuthority extends UserImpl implements Authority {
     private String password;
     private Collection<String> roles;
     private Collection<String> rules;
 
-    public UserAuthority(T id) {
+    public UserAuthority(String id) {
         super(id);
     }
 

@@ -1,13 +1,13 @@
 package com.github.glzaboy.easysecurity.session;
 
-import java.io.Serializable;
+import com.github.glzaboy.easysecurity.exceptions.SessionException;
 
-public interface SessionStore<T extends Serializable, S extends Serializable> {
-    boolean addSession(Session<T, S> session);
+public interface SessionStore {
+    void saveSession(Session session) throws SessionException;
 
-    boolean delSession(Session<T, S> session);
+    void removeSession(Session session) throws SessionException;
 
-    Session<T, S> getSession(T sessionId);
+    Session getSession(String sessionId) throws SessionException;
 
-    boolean updateSession(Session<T, S> session);
+    void updateSession(Session session) throws SessionException;
 }

@@ -1,26 +1,25 @@
 package com.github.glzaboy.easysecurity.securitymanager;
 
 import com.github.glzaboy.easysecurity.exceptions.AuthorizationException;
+import com.github.glzaboy.easysecurity.exceptions.SessionException;
 import com.github.glzaboy.easysecurity.realm.loginInfo.LoginInfoDao;
 import com.github.glzaboy.easysecurity.session.Session;
-
-import java.io.Serializable;
 
 /**
  * 安全管理类
  */
-public interface SecurityManager<T extends Serializable, S extends Serializable> {
+public interface SecurityManager {
     /**
      * 登录
-     * @param userInfo
+     * @param loginInfoDao
      * @return
      * @throws AuthorizationException
      */
-    Session<T, S> login(LoginInfoDao loginInfoDao) throws AuthorizationException;
+    Session login(LoginInfoDao loginInfoDao) throws AuthorizationException;
 
     /**
      * 限出
-     * @param userInfo
+     * @param session
      */
-    void logout(Session<T, S> session);
+    void logout(Session session) throws SessionException;
 }

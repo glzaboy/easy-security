@@ -1,165 +1,119 @@
 package com.github.glzaboy.easysecurity.session;
 
-import com.github.glzaboy.easysecurity.exceptions.UnavailableSessionException;
+import com.github.glzaboy.easysecurity.exceptions.SessionException;
 import com.github.glzaboy.easysecurity.user.UserAuthority;
 import com.github.glzaboy.easysecurity.util.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SessionImpl<T extends Serializable, S extends Serializable> implements Session<T, S> {
+public class SessionImpl implements Session {
+    private static Logger logger = LoggerFactory.getLogger(SessionImpl.class);
+
+
     private static final String USER_KEY = ThreadContext.class.getName() + "_USER_KEY";
-
-
-    private Date createDate;
-
+    private String id;
+    private Date createDate = new Date();
     private Date lastActiveDate;
 
-    private boolean isValid=true;
+    private Map<String, Object> attributes = new HashMap<>();
 
-    private T id;
-    private Map<String, Object> attributes;
-    private Logger logger = LoggerFactory.getLogger(SessionImpl.class);
+    public SessionImpl(String id) {
+        this(id, null);
+    }
 
-    public SessionImpl(T id, UserAuthority<S> user) {
-        setValid(true);
-        setId(id);
-        setCreateDate(new Date());
-        setLastActiveDate(getCreateDate());
+    public SessionImpl(String id, UserAuthority userAuthority) {
+        this.id = id;
+        touch();
         try {
-            setUser(user);
-        } catch (UnavailableSessionException e) {
+            if (userAuthority != null) {
+                setUser(userAuthority);
+            }
+        } catch (SessionException e) {
             logger.warn("Session Invalid .");
         }
     }
 
-
-    public SessionImpl(T id) {
-        this(id,null);
+    @Override
+    public String getId() {
+        return this.id;
     }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    private void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getLastActiveDate() {
-        return lastActiveDate;
-    }
-
-    private void setLastActiveDate(Date lastActiveDate) {
-        this.lastActiveDate = lastActiveDate;
-    }
-
-    public boolean isValid() {
-        return isValid;
-    }
-
-    private void setValid(boolean valid) {
-        isValid = valid;
-    }
-
-    public T getId() {
-        return id;
-    }
-
-    private void setId(T id) {
-        this.id = id;
-    }
-
-    private Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    private void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
-    }
-
+    @Override
     public void touch() {
-        setLastActiveDate(new Date());
+        lastActiveDate = new Date();
+    }
+
+    @Override
+    public long getCreationTime() {
+        return createDate.getTime();
+    }
+
+    @Override
+    public long getLastAccessedTime() {
+        return lastActiveDate.getTime();
     }
 
 
-    public boolean stopSession() throws UnavailableSessionException {
-        if(!isValid()){
-            throw new UnavailableSessionException("会话无效");
-        }
-        setValid(false);
-        return true;
+    @Override
+    public Object getAttribute(String name) throws SessionException {
+        return attributes.get(name);
     }
 
-    public Collection<String> getObjectKeys() throws UnavailableSessionException {
-        if(!isValid()){
-            throw new UnavailableSessionException("会话已失效");
-        }
-        Map<String, Object> attributes = getAttributes();
-        if(attributes==null){
-            return Collections.emptySet();
-        }
-        return attributes.keySet();
+    @Override
+    public void setAttribute(String name, Object value) throws SessionException {
+        attributes.put(name, value);
     }
 
-    public Object getAttribute(String key) throws UnavailableSessionException {
-        if(!isValid()){
-            throw new UnavailableSessionException("会话已失效");
-        }
-        Map<String, Object> attributes = getAttributes();
-        if(attributes==null){
-            return null;
-        }
-        return attributes.get(key);
+    @Override
+    public void removeAttribute(String name) throws SessionException {
+        attributes.remove(name);
     }
 
-    public void setAttribute(String key, Object value) throws UnavailableSessionException {
-        if(!isValid()){
-            throw new UnavailableSessionException("会话已失效");
-        }
-        Map<String, Object> attributes = getAttributes();
-        if (attributes == null) {
-            attributes = new HashMap<>();
-            setAttributes(attributes);
-        }
-        attributes.put(key,value);
-    }
-
-    public Object removeAttribute(String key) throws UnavailableSessionException {
-        if(!isValid()){
-            throw new UnavailableSessionException("会话已失效");
-        }
-        Map<String, Object> attributes = getAttributes();
-        if (attributes == null) {
-            return null;
-        }
-        return attributes.remove(key);
-    }
-
+    @Override
     @SuppressWarnings("unchecked")
-    public UserAuthority<S> getUser() throws UnavailableSessionException {
-        if (!isValid()) {
-            throw new UnavailableSessionException("会话已失效");
-        }
-        return (UserAuthority<S>) getAttribute(USER_KEY);
+    public UserAuthority getUser() throws SessionException {
+        return (UserAuthority) getAttribute(USER_KEY);
     }
 
-    public void setUser(UserAuthority<S> user) throws UnavailableSessionException {
-        if(!isValid()){
-            throw new UnavailableSessionException("会话已失效");
-        }
-        if(user!=null){
-            setAttribute(USER_KEY,user);
-        }else{
-            removeAttribute(USER_KEY);
-        }
-
+    @Override
+    public void setUser(UserAuthority userAuthority) throws SessionException {
+        setAttribute(USER_KEY, userAuthority);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SessionImpl session = (SessionImpl) o;
+
+        if (!id.equals(session.id)) return false;
+        if (!createDate.equals(session.createDate)) return false;
+        if (lastActiveDate != null ? !lastActiveDate.equals(session.lastActiveDate) : session.lastActiveDate != null)
+            return false;
+        return attributes != null ? attributes.equals(session.attributes) : session.attributes == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + createDate.hashCode();
+        result = 31 * result + (lastActiveDate != null ? lastActiveDate.hashCode() : 0);
+        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "SessionImpl{" +
+                "id='" + id + '\'' +
+                ", createDate=" + createDate +
+                ", lastActiveDate=" + lastActiveDate +
+                ", attributes=" + attributes +
+                '}';
+    }
 }

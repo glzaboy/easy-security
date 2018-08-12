@@ -5,7 +5,6 @@ import com.github.glzaboy.easysecurity.session.SessionStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,29 +74,27 @@ public class ThreadContext {
 
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Serializable, S extends Serializable> SecurityManager<T, S> getSecurityManager() {
-        return (SecurityManager<T, S>) get(SECURITY_MANAGER_KEY);
+    public static SecurityManager getSecurityManager() {
+        return (SecurityManager) get(SECURITY_MANAGER_KEY);
     }
 
-    public static <T extends Serializable, S extends Serializable> void setSecurityManager(SecurityManager<T, S> securityManager) {
+    public static void setSecurityManager(SecurityManager securityManager) {
         if (securityManager != null) {
             put(SECURITY_MANAGER_KEY, securityManager);
+        } else {
+            removeSecurityManager();
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Serializable, S extends Serializable> SecurityManager<T, S> removeSecurityManager() {
-        return (SecurityManager<T, S>) remove(SECURITY_MANAGER_KEY);
+    public static SecurityManager removeSecurityManager() {
+        return (SecurityManager) remove(SECURITY_MANAGER_KEY);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Serializable, S extends Serializable> SessionStore<T, S> getSessionStore() {
-        return (SessionStore<T, S>) get(SESSION_STORE_KEY);
+    public static SessionStore getSessionStore() {
+        return (SessionStore) get(SESSION_STORE_KEY);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Serializable, S extends Serializable> void setSessionStore(SessionStore<T, S> sessionStore) {
+    public static void setSessionStore(SessionStore sessionStore) {
         if (sessionStore != null) {
             put(SESSION_STORE_KEY, sessionStore);
         } else {
@@ -105,9 +102,8 @@ public class ThreadContext {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Serializable, S extends Serializable> SessionStore<T, S> removeSessionStore() {
-        return (SessionStore<T, S>) remove(SESSION_STORE_KEY);
+    public static SessionStore removeSessionStore() {
+        return (SessionStore) remove(SESSION_STORE_KEY);
     }
 
 

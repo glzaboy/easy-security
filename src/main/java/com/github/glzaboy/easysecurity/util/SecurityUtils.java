@@ -4,13 +4,14 @@ import com.github.glzaboy.easysecurity.exceptions.UnavailableSecurityManagerExce
 import com.github.glzaboy.easysecurity.securitymanager.SecurityManager;
 
 public class SecurityUtils {
-    public static SecurityManager getSecurityManager() throws UnavailableSecurityManagerException {
+    public static SecurityManager getSecurityManager() {
         SecurityManager securityManager = ThreadContext.getSecurityManager();
-        if(securityManager==null){
-            throw new UnavailableSecurityManagerException("No SecurityManager ,Thead context "+Thread.currentThread().getName());
+        if (securityManager == null) {
+            throw new UnavailableSecurityManagerException("No SecurityManager ,Thead context " + Thread.currentThread().getName());
         }
         return securityManager;
     }
+
     public static void setSecurityManager(SecurityManager securityManager) {
         ThreadContext.setSecurityManager(securityManager);
     }

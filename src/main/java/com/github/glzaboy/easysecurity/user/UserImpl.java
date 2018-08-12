@@ -1,24 +1,21 @@
 package com.github.glzaboy.easysecurity.user;
 
 
-import java.io.Serializable;
-
-public class UserImpl<T extends Serializable> implements User<T> {
-    private T id;
+public class UserImpl implements User {
+    private String id;
     private String userName;
 
 
-
-    public UserImpl(T id) {
+    public UserImpl(String id) {
         this.id = id;
     }
 
     @Override
-    public T getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(T id) {
+    public void setId(String id) {
         this.id = id;
     }
 

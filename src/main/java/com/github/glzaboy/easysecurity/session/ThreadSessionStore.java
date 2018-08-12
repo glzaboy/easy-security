@@ -1,32 +1,50 @@
 package com.github.glzaboy.easysecurity.session;
 
-import java.io.Serializable;
+import com.github.glzaboy.easysecurity.exceptions.SessionException;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class ThreadSessionStore<T extends Serializable, S extends Serializable> implements SessionStore<T, S> {
-    private Map<T, Session<T, S>> sessionMap = new HashMap<>();
+public class ThreadSessionStore implements SessionStore {
+    private Map<String, Session> sessionMap = new HashMap<>();
+
 
     @Override
-    public boolean addSession(Session<T, S> session) {
-        sessionMap.put(session.getId(), session);
-        return true;
+    public void saveSession(Session session) throws SessionException {
+        if (session != null) {
+            sessionMap.put(session.getId(), session);
+        } else {
+            throw new SessionException("invalidate session");
+        }
+
     }
 
     @Override
-    public boolean delSession(Session<T, S> session) {
-        sessionMap.remove(session.getId());
-        return true;
+    public void removeSession(Session session) throws SessionException {
+        if (session != null) {
+            sessionMap.remove(session.getId());
+        } else {
+            throw new SessionException("invalidate session");
+        }
+    }
+
+
+    @Override
+    public Session getSession(String sessionId) throws SessionException {
+        if (sessionId != null) {
+            return sessionMap.get(sessionId);
+        } else {
+            throw new SessionException("invalidate session");
+        }
     }
 
     @Override
-    public Session<T, S> getSession(T sessionId) {
-        return sessionMap.get(sessionId);
-    }
+    public void updateSession(Session session) throws SessionException {
+        if (session != null) {
+            sessionMap.put(session.getId(), session);
+        } else {
+            throw new SessionException("invalidate session");
+        }
 
-    @Override
-    public boolean updateSession(Session<T, S> session) {
-        sessionMap.put(session.getId(),session);
-        return true;
     }
 }

@@ -1,12 +1,12 @@
-package com.github.glzaboy.easysecurity.session.generator;
+package com.github.glzaboy.easysecurity.idGenerator;
 
 import java.util.Random;
 
-public class RandomIdSessionGenerator implements SessionIdGenerator<String> {
+public class NumberGenerator implements IdGenerator {
     private static final String RANDOM_NUM_GENERATOR_ALGORITHM_NAME = "SHA1PRNG";
     private Random random;
 
-    public RandomIdSessionGenerator() {
+    public NumberGenerator() {
         super();
         try {
             this.random = java.security.SecureRandom.getInstance(RANDOM_NUM_GENERATOR_ALGORITHM_NAME);
