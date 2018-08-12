@@ -4,23 +4,28 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ThreadSessionStore implements SessionStore {
-    private Map<Serializable, Session> sessionMap = new HashMap<>();
-    public boolean addSession(Session session) {
-        sessionMap.put(session.getId().toString(),session);
-        return false;
+public class ThreadSessionStore<T extends Serializable, S extends Serializable> implements SessionStore<T, S> {
+    private Map<T, Session<T, S>> sessionMap = new HashMap<>();
+
+    @Override
+    public boolean addSession(Session<T, S> session) {
+        sessionMap.put(session.getId(), session);
+        return true;
     }
 
-    public boolean delSession(Session session) {
+    @Override
+    public boolean delSession(Session<T, S> session) {
         sessionMap.remove(session.getId());
-        return false;
+        return true;
     }
 
-    public Session getSession(Serializable sessionId) {
+    @Override
+    public Session<T, S> getSession(T sessionId) {
         return sessionMap.get(sessionId);
     }
 
-    public boolean updateSession(Session session) {
+    @Override
+    public boolean updateSession(Session<T, S> session) {
         sessionMap.put(session.getId(),session);
         return true;
     }

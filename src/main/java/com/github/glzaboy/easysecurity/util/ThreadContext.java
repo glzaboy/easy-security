@@ -5,6 +5,7 @@ import com.github.glzaboy.easysecurity.session.SessionStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,11 +89,11 @@ public class ThreadContext {
         return (SecurityManager) remove(SECURITY_MANAGER_KEY);
     }
 
-    public static SessionStore getSessionStore() {
-        return (SessionStore) get(SESSION_STORE_KEY);
+    public static <T extends Serializable, S extends Serializable> SessionStore<T, S> getSessionStore() {
+        return (SessionStore<T, S>) get(SESSION_STORE_KEY);
     }
 
-    public static void setSessionStore(SessionStore sessionStore) {
+    public static <T extends Serializable, S extends Serializable> void setSessionStore(SessionStore<T, S> sessionStore) {
         if (sessionStore != null) {
             put(SESSION_STORE_KEY, sessionStore);
         } else {
@@ -100,8 +101,8 @@ public class ThreadContext {
         }
     }
 
-    public static SessionStore removeSessionStore() {
-        return (SessionStore) remove(SESSION_STORE_KEY);
+    public static <T extends Serializable, S extends Serializable> SessionStore<T, S> removeSessionStore() {
+        return (SessionStore<T, S>) remove(SESSION_STORE_KEY);
     }
 
 

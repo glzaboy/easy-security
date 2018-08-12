@@ -1,13 +1,13 @@
 package com.github.glzaboy.easysecurity.session;
 
 import com.github.glzaboy.easysecurity.exceptions.UnavailableSessionException;
-import com.github.glzaboy.easysecurity.user.User;
+import com.github.glzaboy.easysecurity.user.UserAuthority;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
-public interface Session<T extends Serializable>{
+public interface Session<T extends Serializable, S extends Serializable> {
 
     T getId();
 
@@ -33,9 +33,9 @@ public interface Session<T extends Serializable>{
 
     Object removeAttribute(String key) throws UnavailableSessionException;
 
-    User  getUser() throws UnavailableSessionException;
+    UserAuthority<S> getUser() throws UnavailableSessionException;
 
-    public void setUser(User user) throws UnavailableSessionException;
+    public void setUser(UserAuthority<S> user) throws UnavailableSessionException;
 
     public String toString();
 

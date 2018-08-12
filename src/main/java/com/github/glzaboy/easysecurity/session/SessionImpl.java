@@ -1,7 +1,7 @@
 package com.github.glzaboy.easysecurity.session;
 
 import com.github.glzaboy.easysecurity.exceptions.UnavailableSessionException;
-import com.github.glzaboy.easysecurity.user.User;
+import com.github.glzaboy.easysecurity.user.UserAuthority;
 import com.github.glzaboy.easysecurity.util.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +13,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SessionImpl<T extends Serializable> implements Session<T> {
-    Logger logger=LoggerFactory.getLogger(SessionImpl.class);
+public class SessionImpl<T extends Serializable, S extends Serializable> implements Session<T, S> {
+    private static final String USER_KEY = ThreadContext.class.getName() + "_USER_KEY";
 
 
     private Date createDate;
@@ -25,10 +25,9 @@ public class SessionImpl<T extends Serializable> implements Session<T> {
 
     private T id;
     private Map<String, Object> attributes;
+    private Logger logger = LoggerFactory.getLogger(SessionImpl.class);
 
-    static final String USER_KEY = ThreadContext.class.getName() + "_USER_KEY";
-
-    public SessionImpl(T id, User user) {
+    public SessionImpl(T id, UserAuthority<S> user) {
         setValid(true);
         setId(id);
         setCreateDate(new Date());
@@ -143,7 +142,15 @@ public class SessionImpl<T extends Serializable> implements Session<T> {
         return attributes.remove(key);
     }
 
-    public void setUser(User user) throws UnavailableSessionException {
+    @SuppressWarnings("unchecked")
+    public UserAuthority<S> getUser() throws UnavailableSessionException {
+        if (!isValid()) {
+            throw new UnavailableSessionException("会话已失效");
+        }
+        return (UserAuthority<S>) getAttribute(USER_KEY);
+    }
+
+    public void setUser(UserAuthority<S> user) throws UnavailableSessionException {
         if(!isValid()){
             throw new UnavailableSessionException("会话已失效");
         }
@@ -154,30 +161,5 @@ public class SessionImpl<T extends Serializable> implements Session<T> {
         }
 
     }
-    public User getUser() throws UnavailableSessionException {
-        if(!isValid()){
-            throw new UnavailableSessionException("会话已失效");
-        }
-        return (User) getAttribute(USER_KEY);
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SessionImpl<?> session = (SessionImpl<?>) o;
-
-        if (isValid != session.isValid) return false;
-        if (!id.equals(session.id)) return false;
-        return attributes != null ? attributes.equals(session.attributes) : session.attributes == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (isValid ? 1 : 0);
-        result = 31 * result + id.hashCode();
-        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
-        return result;
-    }
 }

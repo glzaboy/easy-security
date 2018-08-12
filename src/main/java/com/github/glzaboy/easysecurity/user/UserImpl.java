@@ -2,37 +2,34 @@ package com.github.glzaboy.easysecurity.user;
 
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
 
 public class UserImpl<T extends Serializable> implements User<T> {
     private T id;
     private String userName;
 
 
+
     public UserImpl(T id) {
         this.id = id;
     }
 
-
+    @Override
     public T getId() {
         return id;
     }
 
+    public void setId(T id) {
+        this.id = id;
+    }
+
+    @Override
     public String getUserName() {
         return userName;
     }
 
+    @Override
     public void setUserName(String userName) {
-        this.userName=userName;
-    }
-
-    public Collection<String> getRole() {
-        return Collections.emptySet();
-    }
-
-    public Collection<String> getRules() {
-        return Collections.emptySet();
+        this.userName = userName;
     }
 
     @Override

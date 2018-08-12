@@ -7,11 +7,10 @@ public class RandomIdSessionGenerator implements SessionIdGenerator<String> {
     private Random random;
 
     public RandomIdSessionGenerator() {
+        super();
         try {
             this.random = java.security.SecureRandom.getInstance(RANDOM_NUM_GENERATOR_ALGORITHM_NAME);
         } catch (java.security.NoSuchAlgorithmException e) {
-//            log.debug("The SecureRandom SHA1PRNG algorithm is not available on the current platform.  Using the " +
-//                    "platform's default SecureRandom algorithm.", e);
             this.random = new java.security.SecureRandom();
         }
     }
