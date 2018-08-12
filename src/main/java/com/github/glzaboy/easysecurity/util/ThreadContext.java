@@ -75,24 +75,28 @@ public class ThreadContext {
 
     }
 
-    public static SecurityManager getSecurityManager() {
-        return (SecurityManager) get(SECURITY_MANAGER_KEY);
+    @SuppressWarnings("unchecked")
+    public static <T extends Serializable, S extends Serializable> SecurityManager<T, S> getSecurityManager() {
+        return (SecurityManager<T, S>) get(SECURITY_MANAGER_KEY);
     }
 
-    public static void setSecurityManager(SecurityManager securityManager) {
+    public static <T extends Serializable, S extends Serializable> void setSecurityManager(SecurityManager<T, S> securityManager) {
         if (securityManager != null) {
             put(SECURITY_MANAGER_KEY, securityManager);
         }
     }
 
-    public static SecurityManager removeSecurityManager() {
-        return (SecurityManager) remove(SECURITY_MANAGER_KEY);
+    @SuppressWarnings("unchecked")
+    public static <T extends Serializable, S extends Serializable> SecurityManager<T, S> removeSecurityManager() {
+        return (SecurityManager<T, S>) remove(SECURITY_MANAGER_KEY);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends Serializable, S extends Serializable> SessionStore<T, S> getSessionStore() {
         return (SessionStore<T, S>) get(SESSION_STORE_KEY);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends Serializable, S extends Serializable> void setSessionStore(SessionStore<T, S> sessionStore) {
         if (sessionStore != null) {
             put(SESSION_STORE_KEY, sessionStore);
@@ -101,6 +105,7 @@ public class ThreadContext {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends Serializable, S extends Serializable> SessionStore<T, S> removeSessionStore() {
         return (SessionStore<T, S>) remove(SESSION_STORE_KEY);
     }
